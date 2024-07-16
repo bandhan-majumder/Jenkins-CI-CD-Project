@@ -63,7 +63,7 @@ pipeline {
             }
             steps {
                 // here Jenkins will look for credentials saved by the user with id "github" and save as the value of GITHUB_TOKEN
-                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'github-id', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                         git config user.email "bandhanmajumder16@gmail.com"
                         git config user.name "Bandhan Majumder"

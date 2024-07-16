@@ -25,6 +25,11 @@ pipeline {
         }
         stage('Static code analysis using SonarQube') {
             environment {
+                PUBLIC_IP_CREDENTIALS = credentials('public-ip')
+                PUBLIC_IP = "${env.PUBLIC_IP_CREDENTIALS}"
+                // credentials function returns an object that Jenkins manages for security reasons, 
+                // we need to use the appropriate method to retrieve the actual secret value. For a secret text, 
+                // Jenkins will handle it correctly, but you need to use it properly
                 SONAR_URL = "$PUBLIC_IP:9000" 
                 // as SonarQube runs on port 9000 by default
             }

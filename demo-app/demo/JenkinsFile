@@ -1,33 +1,36 @@
 pipeline {
     agent {
         docker { 
-            image 'abhishekf5/maven-abhishek-docker-agent:v1'
+            image 'abhishekf5/maven-abhishek-docker-agent:v1' // use this image
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+            // purpose of additional argument [args]: enable Docker-in-Docker (DinD) functionality. 
+            // By mounting the Docker socket from the host into the container, you allow the Docker CLI inside the container to communicate with the Docker daemon on the host machine. 
+            // This means you can run Docker commands inside the container, and those commands will be executed by the host's Docker daemon.
         }
     }
     stages {
         stage('Checkout') {
             steps {
-                sh 'echo passed'
+                sh 'echo "Already done before"'
             }
-        }
-        stage('Check Java Version') {
-            steps {
-                sh 'java -version'
-                sh 'mvn -version'
-            }
+            // we don't need to checkout the GitHub repo as the Jenkins file is in the repo and we pointed to this repo via pipeline script from SCM (git) while configuring. 
+            // So it will anyway clone the repo to get the JenkinsFile. So we don't need to clone it again.
         }
         stage('Build and Test') {
             steps {
                 sh 'cd demo-app/demo && mvn clean package'
+                // go to the directory where 'pom.xml' is present and run mvn clean package
+                // .jar file in "demo-app/demo/target" directory will be generated as artifact named such as "demo-0.0.1-SNAPSHOT.jar"
             }
         }
         stage('Static code analysis using SonarQube') {
             environment {
                 PUBLIC_IP = credentials('public-ip')
-                SONAR_URL = "${PUBLIC_IP}:9000"
+                SONAR_URL = "${PUBLIC_IP}:9000" 
+                // as SonarQube runs on port 9000 by default
             }
             steps {
+                // here Jenkins will look for credentials saved by the user with id "sonarqube-cred" and save as the value of SONAR_AUTH_TOKEN
                 withCredentials([string(credentialsId: 'sonarqube-cred', variable: 'SONAR_AUTH_TOKEN')]) {
                     sh 'cd demo-app/demo/ && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
                 }
@@ -37,6 +40,7 @@ pipeline {
             environment {
                 DOCKER_IMAGE = "bandhan99/ci-cd-jenkins:${BUILD_NUMBER}"
                 REGISTRY_CREDENTIALS = credentials('docker-cred')
+                // uses the credentials saved with id "docker-cred" in DockerHub
             }
             steps {
                 script { 
@@ -54,6 +58,7 @@ pipeline {
                 GIT_USER_NAME = "bandhan-majumder"
             }
             steps {
+                // here Jenkins will look for credentials saved by the user with id "github" and save as the value of GITHUB_TOKEN
                 withCredentials([string(credentialsId: 'github-id', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                         git config user.email "bandhanmajumder16@gmail.com"
@@ -66,11 +71,6 @@ pipeline {
                     '''
                 }
             }
-        }
-    }
-    post {
-        always {
-            cleanWs()
         }
     }
 }

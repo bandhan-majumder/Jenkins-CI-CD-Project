@@ -8,15 +8,7 @@ pipeline {
             // This means you can run Docker commands inside the container, and those commands will be executed by the host's Docker daemon.
         }
     }
-    options {
-        skipDefaultCheckout(true) // Skip the default checkout
-    }
     stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
         stage('Checkout') {
             steps {
                 sh 'passed'

@@ -25,15 +25,10 @@ pipeline {
             }
         }
         stage('Static code analysis using SonarQube') {
-            environment {
-                PUBLIC_IP = credentials('public-ip')
-                SONAR_URL = "${PUBLIC_IP}:9000" 
-                // as SonarQube runs on port 9000 by default
-            }
             steps {
                 // here Jenkins will look for credentials saved by the user with id "sonarqube-cred" and save as the value of SONAR_AUTH_TOKEN
                 withCredentials([string(credentialsId: 'sonarqube-cred', variable: 'SONAR_AUTH_TOKEN')]) {
-                    sh 'cd demo-app && ls -ltr && mvn clean install sonar:sonar -Dsonar.host.url=http://${SONAR_URL}'
+                    sh 'cd demo-app && ls -ltr && mvn clean install sonar:sonar -Dsonar.host.url=http://43.204.130.176:9000' // replace with your url
                 }
             }
         }

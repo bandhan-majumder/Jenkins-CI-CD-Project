@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker { 
-            image 'bandhan99/maven-docker-agent:latest' // use this image
+            image 'abhishekf5/maven-abhishek-docker-agent:v1' // use this image
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
             // purpose of additional argument [args]: enable Docker-in-Docker (DinD) functionality. 
             // By mounting the Docker socket from the host into the container, you allow the Docker CLI inside the container to communicate with the Docker daemon on the host machine. 

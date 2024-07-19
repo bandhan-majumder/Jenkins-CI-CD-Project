@@ -9,9 +9,33 @@ pipeline {
         }
     }
     stages {
-        stage('Clean Workspace') {
+        stage('Cleanup Old Files') {
             steps {
-                cleanWs()
+                sh '''
+                    files_to_remove=(
+                        "demo-app/target/classes/com/bandhan/demo_app/DemoAppApplication.class"
+                        "demo-app/target/classes/templates/index.html"
+                        "demo-app/target/maven-archiver/pom.properties"
+                        "demo-app/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst"
+                        "demo-app/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst"
+                        "demo-app/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst"
+                        "demo-app/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst"
+                        "demo-app/target/spring-boot-web.jar"
+                        "demo-app/target/spring-boot-web.jar.original"
+                        "demo-app/target/surefire-reports/TEST-com.bandhan.demo_app.DemoAppApplicationTests.xml"
+                        "demo-app/target/surefire-reports/com.bandhan.demo_app.DemoAppApplicationTests.txt"
+                        "demo-app/target/test-classes/com/bandhan/demo_app/DemoAppApplicationTests.class"
+                    )
+
+                    for file in "${files_to_remove[@]}"; do
+                        if [ -f "$file" ]; then
+                            echo "Removing $file"
+                            rm -f "$file" || echo "Failed to remove $file"
+                        else
+                            echo "$file not found, skipping"
+                        fi
+                    done
+                '''
             }
         }
         stage('Checkout') {

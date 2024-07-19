@@ -18,11 +18,11 @@ pipeline {
         }
         stage('Build and Test') {
             steps {
-                    dir('demo-app') {  // Change to the directory containing pom.xml
-                        sh 'mvn clean install'
-                        // .jar file in "demo-app/target" directory will be generated as artifact named such as "spring-boot-web.jar"
-                    }
+                dir('demo-app') {  // Change to the directory containing pom.xml
+                    sh 'mvn clean install'
+                    // .jar file in "demo-app/target" directory will be generated as artifact named such as "spring-boot-web.jar"
                 }
+            }
         }
         stage('Static code analysis using SonarQube') {
             environment {
@@ -37,7 +37,7 @@ pipeline {
                 }
             }
         }
-        stage('Build and push DockerImage') {
+        stage('Build and push Docker Image') {
             environment {
                 DOCKER_IMAGE = "bandhan99/ci-cd-jenkins:${BUILD_NUMBER}"
                 REGISTRY_CREDENTIALS = credentials('docker-cred')

@@ -32,7 +32,7 @@ pipeline {
             steps {
                 // here Jenkins will look for credentials saved by the user with id "sonarqube-cred" and save as the value of SONAR_AUTH_TOKEN
                 withCredentials([string(credentialsId: 'sonarqube-cred', variable: 'SONAR_AUTH_TOKEN')]) {
-                    sh 'cd demo-app/ && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+                    sh 'mvn clean install sonar:sonar -Dsonar.host.url=http://${SONAR_URL}:9000'
                 }
             }
         }

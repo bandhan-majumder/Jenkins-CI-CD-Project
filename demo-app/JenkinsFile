@@ -31,7 +31,7 @@ pipeline {
                 // as SonarQube runs on port 9000 by default
             }
             steps {
-                    sh 'ls -ltr' // for debugging
+                    sh 'cd demo-app && ls -ltr' // for debugging
                 // here Jenkins will look for credentials saved by the user with id "sonarqube-cred" and save as the value of SONAR_AUTH_TOKEN
                 withCredentials([string(credentialsId: 'sonarqube-cred', variable: 'SONAR_AUTH_TOKEN')]) {
                     sh 'mvn clean install sonar:sonar -Dsonar.host.url=http://${SONAR_URL}:9000'

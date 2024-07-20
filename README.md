@@ -12,6 +12,6 @@ If the application build fails, make sure that -
 3. The port 8080 is not captured by any other service
 
 ## For the entire pipeline setup
-Read this hashnode doc : ############
+Read this hashnode doc : [Link](https://bandhanmajumder.hashnode.dev/jenkins-pipeline-an-end-to-end-project)
 
 
